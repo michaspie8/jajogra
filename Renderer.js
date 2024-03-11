@@ -1,28 +1,44 @@
 "use strict";
 //Renderer component
 import Component from "./Component.js";
+import Game from "./Game.js";
 
-class Renderer extends Component{
-    color = "#000000";
-    fill = true;
-    constructor(gameObject, color, fill){
+class Renderer extends Component
+{
+    texture = null;
+
+
+    constructor(gameObject, texture, isPath = true)
+    {
         super(gameObject);
-        this.color = color;
-        this.fill = fill;
+
+        if (isPath)
+        {
+            this.texture = new Image();
+            this.texture.loaded = false;
+            this.texture.onload = function ()
+                {
+                    this.loaded = true;
+                };
+            this.texture.src = texture;
+            console.log(this.texture);
+        } else
+            this.texture = texture;
     }
-    draw(ctx){
-        ctx.save();
-        ctx.translate(this.gameObject.transform.position.x, this.gameObject.transform.position.y);
-        ctx.rotate(this.gameObject.transform.rotation);
-        ctx.scale(this.gameObject.transform.scale.x, this.gameObject.transform.scale.y);
-        ctx.fillStyle = this.color;
-        ctx.strokeStyle = this.color;
-        if(this.fill){
-            ctx.fillRect(-this.gameObject.transform.width / 2, -this.gameObject.transform.height / 2, this.gameObject.transform.width, this.gameObject.transform.height);
-        }else{
-            ctx.strokeRect(-this.gameObject.transform.width / 2, -this.gameObject.transform.height / 2, this.gameObject.transform.width, this.gameObject.transform.height);
+
+    render()
+    {
+        if (this.enabled && this.texture.loaded)
+        {
+            let ctx = Game.instance.context;
+            let transform = this.gameObject.transform;
+            ctx.save();
+            ctx.translate(transform.position.x, transform.position.y);
+            ctx.rotate(transform.rotation);
+            ctx.scale(transform.scale.x, transform.scale.y);
+            ctx.drawImage(this.texture, -transform.width / 2, -transform.height / 2, transform.width, transform.height);
+            ctx.restore();
         }
-        ctx.restore();
     }
 }
 

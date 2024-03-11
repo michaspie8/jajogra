@@ -1,12 +1,31 @@
 "use strict";
+
 //component class, like in asteroids
 
-class Component{
+class Component
+{
     enabled = true;
     gameObject = null;
-    constructor(gameObject){
+
+    constructor(gameObject)
+    {
         this.gameObject = gameObject;
         gameObject.components.push(this);
+    }
+
+    update()
+    {
+
+    }
+
+    render()
+    {
+
+    }
+
+    clean()
+    {
+
     }
 }
 

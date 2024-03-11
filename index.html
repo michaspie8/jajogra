@@ -3,15 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Dżajcowa giera</title>
-    <link rel="stylesheet" href="style.css">
-<!--    include all classes as modules-->
-    <script type="module" src="GameObject.js"></script>
+    <!--    <link rel="stylesheet" href="style.css">-->
+    <!--    include all classes as modules-->
+    <!--<script type="module" src="GameObject.js"></script>
     <script type="module" src="Component.js"></script>
     <script type="module" src="InputHandler.js"></script>
     <script type="module" src="Renderer.js"></script>
-    <script defer src="game.js"></script>
+    <script type="module" defer src="Game.js"></script>-->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <script src="bootstrap/js/bootstrap.min.js" defer></script>
 </head>
 <body>
-<canvas id="gameCanvas"></canvas>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        gap: 10%;
+        background-color: #f0f0f0;
+    }
+
+    #gameCanvas {
+        border: 1px solid black;
+    }
+</style>
+<canvas id="gameCanvas">
+    Your browser does not support the HTML5 canvas element.
+</canvas>
+<aside>
+<div id="menu"></div>
+<div id="score"></div>
+</aside>
+<script type="module">
+        console.log('Game started');
+        import Game from './Game.js';
+        new Game();
+</script>
 </body>
 </html>
