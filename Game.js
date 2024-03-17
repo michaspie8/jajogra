@@ -16,7 +16,9 @@ class Game
     eggSpawnInterval = 0;
     eggImages = ["eg.png"];
     basketImage = "zajc.png";
-
+    fps = 240;
+    frameDuration = 1000 / this.fps;
+    lastFrameTime = 0;
 
     constructor()
     {
@@ -91,20 +93,6 @@ class Game
         if(this.inputHandler.keys.includes("Escape")){
             this.pause();
         }
-
-
-
-        // Check if it's time to spawn an egg
-        if (this.music.currentTime >= this.nextBeatTime)
-        {
-            this.spawnEgg();
-            this.nextBeatTime = this.getBeatTime(); // Assume this function returns the time for the next beat
-        }
-
-        // If esc is pressed, pause game
-        if(this.inputHandler.keys.includes("Escape")){
-            this.pause();
-        }
     }
 
     spawnEgg()
@@ -115,10 +103,13 @@ class Game
         let x = Math.random() * (maxX - minX) + minX;
 
         // Create the new egg
-        let egg = new GameObject(x, 0, 16, 16);
+        let egg = new GameObject(x, 0, 28, 36);
         new Renderer(egg, this.eggImages[Math.floor(Math.random() * this.eggImages.length)], true);
         this.lastEggPos = egg.transform.position.x;
-        new Dzajco(egg,5);
+        //egg is going speed pixels per frame to basket y position. the time has to be two beats
+        let speed = (this.basket.transform.position.y - this.basket.transform.height/2) / (this.bpm / 60*8*4*1.5);
+        console.log(speed);
+        new Dzajco(egg,speed);
         console.log("Egg spawned");
     }
 
@@ -140,11 +131,14 @@ class Game
     gameLoop(time)
     {
         if(this.stopped) return;
-        this.deltaTime = (time - this.lastTime) / 1000;
-        this.lastTime = time;
-        this.update();
-        this.render();
-        requestAnimationFrame(this.gameLoop.bind(this));
+        if (time - this.lastFrameTime >= this.frameDuration)
+        {
+            this.deltaTime = (time - this.lastFrameTime) / 1000;
+            this.lastFrameTime = time;
+            this.update();
+            this.render();
+
+        }requestAnimationFrame(this.gameLoop.bind(this));
     }
 
     async start()
@@ -152,12 +146,15 @@ class Game
         switch(this.level){
             case 1:
                 this.music = new BeatBeat(this.musicctx,"alw.mp3",100,20,0.5,150);
+                this.bpm = 113;
                 break;
             case 2:
                 this.music = new BeatBeat(this.musicctx,"Cunk.mp3",100,20,0.5,150);
+                this.bpm = 179;
                 break;
             case 3:
                 this.music = new BeatBeat(this.musicctx,"notb.flac",100,20,0.5,150);
+                this.bpm = 196;
                 break;
             default:
                 location.replace("index.html?level=0")
@@ -172,10 +169,12 @@ class Game
         new Renderer(this.basket, this.basketImage, true);
         new Basket(this.basket, 7);
 
+
         this.music.play(() => {
             if(this.stopped){
                 return;
             }
+
             this.spawnEgg();
         });
         requestAnimationFrame(this.gameLoop.bind(this));

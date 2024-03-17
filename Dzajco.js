@@ -29,6 +29,8 @@ class Dzajco extends Component
             this.gameObject.transform.position.y - this.gameObject.transform.height / 2 <= Game.instance.basket.transform.position.y + Game.instance.basket.transform.height / 2)
         {
             Game.instance.score++;
+            let audio = new Audio("egg.wav");
+            audio.play();
             this.gameObject.clean();
         }
         this.gameObject.transform.position.y += this.speed;

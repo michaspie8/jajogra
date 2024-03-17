@@ -51,6 +51,16 @@ class GameObject
         delete Game.instance.gameObjects.splice(Game.instance.gameObjects.indexOf(this), 1);
     }
 
+    getComponent(type){
+        for (let i = 0; i < this.components.length; i++)
+        {
+            if (this.components[i] instanceof type)
+            {
+                return this.components[i];
+            }
+        }
+    }
+
 
 }
 
