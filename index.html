@@ -3,44 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Dżajcowa giera</title>
-    <!--    <link rel="stylesheet" href="style.css">-->
-    <!--    include all classes as modules-->
-    <!--<script type="module" src="GameObject.js"></script>
-    <script type="module" src="Component.js"></script>
-    <script type="module" src="InputHandler.js"></script>
-    <script type="module" src="Renderer.js"></script>
-    <script type="module" defer src="Game.js"></script>-->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
     <script src="bootstrap/js/bootstrap.min.js" defer></script>
 </head>
 <body>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        gap: 10%;
-        background-color: #f0f0f0;
-    }
-
-    #gameCanvas {
-        border: 1px solid black;
-    }
-</style>
-<canvas id="gameCanvas">
-    Your browser does not support the HTML5 canvas element.
-</canvas>
-<aside>
-<div id="menu"></div>
-<div id="score"></div>
-</aside>
+<header>
+<!--    just title no nav-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Dżajcowa giera</a>
+        </div>
+    </nav>
+</header>
+<main class="container p-2 d-flex align-items-center justify-content-center gap-2">
+    <aside>
+        <div id="settings">
+            <div class="btn btn-danger" onclick='location.replace("index.html?level=0")'>Exit</div>
+        </div>
+    </aside>
+    <div class="d-flex align-items-center justify-content-center m-1" style='background-image: url("start.png")'>
+        <canvas id="gameCanvas" class="border-2">
+        Your browser does not support the HTML5 canvas element.
+    </canvas>
+    </div>
+    <aside>
+        <div id="menu"></div>
+        <div id="score"></div>
+    </aside>
+</main>
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+        <span class="text-muted">Pietruszewski &copy;</span>
+    </div>
+</footer>
 <script type="module">
-        console.log('Game started');
         import Game from './Game.js';
         new Game();
+switch (window.location.search) {
+    case '?level=1':
+        console.log('Level 1');
+        Game.instance.level = 1;
+        break;
+    case '?level=2':
+        console.log('Level 2');
+        Game.instance.level = 2;
+        break;
+    case '?level=3':
+        console.log('Level 3');
+        Game.instance.level = 3;
+        break;
+    default:
+        console.log('Level choosing');
+        document.querySelector("canvas").style.display = "none";
+        document.querySelector("#menu").innerHTML = "" +
+            "<h1>Choose level:</h1>"+
+            "<div class='btn btn-primary' onclick='location.replace(\"index.html?level=1\")'>Level 1</div>" +
+            "<div class='btn btn-primary' onclick='location.replace(\"index.html?level=2\")'>Level 2</div>" +
+            "<div class='btn btn-primary' onclick='location.replace(\"index.html?level=3\")'>Level 3</div>";
+        break;
+}
 </script>
 </body>
 </html>

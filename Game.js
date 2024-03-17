@@ -14,8 +14,8 @@ class Game
     gameObjects = [];
     eggSpawnTime = 0;
     eggSpawnInterval = 0;
-    eggImages = ["egg.jpg"];
-    basketImage = "basket.webp";
+    eggImages = ["eg.png"];
+    basketImage = "zajc.png";
 
 
     constructor()
@@ -30,7 +30,6 @@ class Game
         }
         console.log(Game.instance);
         this.musicctx = new AudioContext();
-        this.music = new BeatBeat(this.musicctx,"fh.flac",5000,20,0.5);
         this.canvas = document.getElementById("gameCanvas");
         this.context = this.canvas.getContext("2d");
         this.config = {width: 800, height: 600, fps: 60};
@@ -40,7 +39,6 @@ class Game
         this.lastTime = 0;
         this.score = 0;
         this.lastEggPos = this.config.width / 2;
-
         this.inputHandler = new InputHandler();
         this.menu = new Menu();
         this.stopped = true;
@@ -48,18 +46,22 @@ class Game
 
     pause()
     {
-        this.music.pause();
+        this.musicctx.suspend();
         console.log("Game stopped");
         cancelAnimationFrame(this.gameLoop);
         this.menu.displayPauseMenu();
         this.stopped = true;
+        this.render();
+        requestAnimationFrame(this.menu.realMenuLoop.bind(this));
     }
 
     resume(){
-        this.music.play();
+        this.musicctx.resume();
         console.log("Game resumed");
+        cancelAnimationFrame(this.menu.realMenuLoop);
         this.menu.clean();
         requestAnimationFrame(this.gameLoop.bind(this));
+        this.menu.addPauseButton();
         this.stopped = false;
     }
 
@@ -137,6 +139,7 @@ class Game
 
     gameLoop(time)
     {
+        if(this.stopped) return;
         this.deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
         this.update();
@@ -146,19 +149,28 @@ class Game
 
     async start()
     {
+        switch(this.level){
+            case 1:
+                this.music = new BeatBeat(this.musicctx,"alw.mp3",100,20,0.5,150);
+                break;
+            case 2:
+                this.music = new BeatBeat(this.musicctx,"Cunk.mp3",100,20,0.5,150);
+                break;
+            case 3:
+                this.music = new BeatBeat(this.musicctx,"notb.flac",100,20,0.5,150);
+                break;
+            default:
+                location.replace("index.html?level=0")
+        }
         this.stopped = false;
+        this.canvas.parentElement.style.backgroundImage = 'url("load.gif")'
+        document.getElementById("score").innerHTML = "loading...";
         await this.music.load();
         console.log("Game started");
-        if (this.inputHandler.keys.includes("ArrowUp"))
-        {
-            console.log("up");
-        }
+        this.menu.addPauseButton();
         this.basket = new GameObject(this.config.width / 2, this.config.height - 64 * 1.5, 64, 64);
         new Renderer(this.basket, this.basketImage, true);
         new Basket(this.basket, 7);
-
-        document.getElementById("score").innerHTML = "loading...";
-
 
         this.music.play(() => {
             if(this.stopped){

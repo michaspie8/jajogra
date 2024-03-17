@@ -21,33 +21,42 @@ class Menu
         // Game.instance.pause();
         this.menuElements = [startbutton];
         console.log("main menu displayed");
-        this.menuLoop();
+        this.render();
     }
 
     displayPauseMenu(){
-
         let resumeButton = document.createElement("div");
         resumeButton.innerHTML = "Resume";
-        resumeButton.style.class = "btn btn-primary"; //bootstrap
-        resumeButton.onclick = () => this.resumeGame();
+        resumeButton.setAttribute("class",  "btn btn-primary"); //bootstrap
+        resumeButton.onclick = () => Game.instance.resume();
         this.menuElements = [resumeButton];
         console.log("pause menu displayed");
-        this.menuLoop()
+        this.render()
+    }
+
+    addPauseButton(){
+        let pauseButton = document.createElement("div");
+        pauseButton.innerHTML = "Pause";
+        pauseButton.setAttribute("class",  "btn btn-primary"); //bootstrap
+        pauseButton.onclick = () => this.pauseGame();
+        this.menuElements.push(pauseButton);
+        this.render();
     }
 
     clean(){
         this.menuElements = [];
-        this.menuLoop();
+        this.render();
 
     }
 
-    menuLoop()
-    {
-            this.renderHtmlElements();
-        //if esc is pressed, resume game
+    realMenuLoop(){
         if(Game.instance.inputHandler.getKey("Escape")){
             Game.instance.resume();
         }
+    }
+    render()
+    {
+            this.renderHtmlElements();
     }
 
     startGame()
@@ -55,6 +64,11 @@ class Menu
         this.clean();
         //start async
         Game.instance.start();
+    }
+
+    pauseGame(){
+        this.clean();
+        Game.instance.pause();
     }
 
     renderHtmlElements()
