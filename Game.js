@@ -107,7 +107,7 @@ class Game
         new Renderer(egg, this.eggImages[Math.floor(Math.random() * this.eggImages.length)], true);
         this.lastEggPos = egg.transform.position.x;
         //egg is going speed pixels per frame to basket y position. the time has to be two beats
-        let speed = (this.basket.transform.position.y - this.basket.transform.height/2) / (this.bpm / 60*8*4*1.5);
+        let speed = (this.basket.transform.position.y - this.basket.transform.height/2 - egg.transform.height/2) / (this.bpm / 60*8*4);
         console.log(speed);
         new Dzajco(egg,speed);
         console.log("Egg spawned");
@@ -167,7 +167,7 @@ class Game
         this.menu.addPauseButton();
         this.basket = new GameObject(this.config.width / 2, this.config.height - 64 * 1.5, 64, 64);
         new Renderer(this.basket, this.basketImage, true);
-        new Basket(this.basket, 7);
+        new Basket(this.basket, 8);
 
 
         this.music.play(() => {
